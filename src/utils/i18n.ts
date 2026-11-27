@@ -1,7 +1,7 @@
 export const languages = ["en", "zh"] as const;
 export type Lang = (typeof languages)[number];
 
-export const defaultLang: Lang = "zh";
+export const defaultLang: Lang = "en";
 
 export const localeMap: Record<Lang, string> = {
   en: "en-US",
@@ -13,6 +13,11 @@ export function getLangPaths() {
     params: { lang },
     props: { lang, locale: localeMap[lang] },
   }));
+}
+
+export function getLangFromPathname(pathname: string): Lang {
+  const firstSegment = pathname.split("/").filter(Boolean)[0] as Lang | undefined;
+  return firstSegment && languages.includes(firstSegment) ? firstSegment : defaultLang;
 }
 
 export const languageNames: Record<Lang, string> = {

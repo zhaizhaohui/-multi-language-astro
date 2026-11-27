@@ -5,13 +5,24 @@ interface Props {
   title?: string;
   description?: string;
   lang?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
 }
 
 const {
   title = "Astro project",
   description = "",
   lang = "en",
+  image,
+  canonical,
+  noindex = false,
 } = Astro.props;
+
+const canonicalUrl = canonical ?? (
+  Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
+);
+const imageUrl = image ? new URL(image, Astro.site ?? Astro.url).href : undefined;
 ---
 
 <!doctype html>
@@ -23,6 +34,23 @@ const {
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+    <meta name="theme-color" content="#b91c1c" />
+
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang === "zh" ? "zh_CN" : "en_US"} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+
+    <meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+
     <title>{title}</title>
   </head>
   <body>

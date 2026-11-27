@@ -16,7 +16,15 @@ npm run build
 npm run preview
 ```
 
-部署时如需生成 Sitemap，设置 `SITE_URL` 后再执行构建。
+## 环境变量
+
+复制 `.env.example` 为 `.env`，并填写正式站点地址：
+
+```env
+SITE_URL=https://example.com
+```
+
+`SITE_URL` 会自动用于 canonical、Open Graph URL 和 Sitemap。`.env` 已被 Git 忽略，不要提交真实配置。
 
 ## 路由
 

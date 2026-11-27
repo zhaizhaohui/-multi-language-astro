@@ -1,4 +1,5 @@
 ---
+import Layout from "@/layouts/Layout.astro";
 import { getLangPaths } from "@/utils/i18n";
 
 export function getStaticPaths() {
@@ -7,5 +8,12 @@ export function getStaticPaths() {
 
 const { lang } = Astro.props;
 
-return Astro.redirect(`/${lang}/blog`);
 ---
+<Layout
+  title="页面标题"
+  description="页面描述"
+  lang={lang}
+  noindex={false}
+>
+
+</Layout>
