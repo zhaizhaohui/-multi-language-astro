@@ -13,8 +13,21 @@ const posts = (await getCollection("blog", (entry) =>
 )).sort((a, b) => a.id.localeCompare(b.id));
 ---
 
-<Layout title="Blog" lang={lang}>
-  <main>
-    {posts.map((post) => <h1>{post.data.title}</h1>)}
+<Layout title="Blog" description="Browse the latest blog posts." lang={lang}>
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <h1 class="mb-8 text-4xl font-bold">Blog</h1>
+    <div class="grid gap-4">
+      {posts.map((post) => {
+        const slug = post.id.slice(`${lang}/`.length);
+        return (
+          <a
+            href={`/${lang}/blog/${slug}`}
+            class="rounded-xl border border-stone-200 p-5 transition hover:border-red-700 hover:text-red-700 dark:border-stone-800 dark:hover:border-red-400 dark:hover:text-red-400"
+          >
+            <h2 class="text-xl font-semibold">{post.data.title}</h2>
+          </a>
+        );
+      })}
+    </div>
   </main>
 </Layout>

@@ -1,19 +1,27 @@
 ---
+import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { getLangPaths } from "@/utils/i18n";
+import { getLangPaths, type Lang } from "@/utils/i18n";
 
 export function getStaticPaths() {
   return getLangPaths();
 }
 
-const { lang } = Astro.props;
+const { lang } = Astro.props as { lang: Lang };
+const homeEntry = await getEntry("pages", `${lang}/home`);
 
+if (!homeEntry) {
+  return Astro.redirect(`/${lang}/blog`);
+}
+
+const { Content } = await render(homeEntry);
 ---
-<Layout
-  title="页面标题"
-  description="页面描述"
-  lang={lang}
-  noindex={false}
->
 
+<Layout title={homeEntry.data.title} lang={lang}>
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <article class="article-content">
+      <h1 class="text-3xl">{homeEntry.data.title}</h1>
+      <Content />
+    </article>
+  </main>
 </Layout>

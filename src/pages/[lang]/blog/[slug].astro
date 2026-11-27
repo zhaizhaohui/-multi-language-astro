@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import { languages, type Lang } from "@/utils/i18n";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  return posts.flatMap((post) => {
+    const [lang, ...slugParts] = post.id.split("/");
+    if (!languages.includes(lang as Lang) || slugParts.length === 0) return [];
+
+    return {
+      params: { lang, slug: slugParts.join("/") },
+      props: { post, lang },
+    };
+  });
+}
+
+const { post, lang } = Astro.props as {
+  post: Awaited<ReturnType<typeof getCollection>>[number];
+  lang: Lang;
+};
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title} description={post.data.title} lang={lang}>
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <a
+      href={`/${lang}/blog`}
+      class="text-sm font-semibold text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+    >
+      ← Back to blog
+    </a>
+
+    <header class="mb-10 border-b border-stone-200 pb-8 dark:border-stone-800">
+      <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+        {post.data.title}
+      </h1>
+    </header>
+
+    <article class="mt-12 prose prose-stone dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-a:text-cinnabar hover:prose-a:text-red-700">
+      <Content />
+    </article>
+  </main>
+</Layout>
