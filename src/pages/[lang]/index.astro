@@ -1,0 +1,11 @@
+---
+import { getLangPaths } from "@/utils/i18n";
+
+export function getStaticPaths() {
+  return getLangPaths();
+}
+
+const { lang } = Astro.props;
+
+return Astro.redirect(`/${lang}/blog`);
+---

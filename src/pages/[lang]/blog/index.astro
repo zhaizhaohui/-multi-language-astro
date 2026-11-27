@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import { getLangPaths, type Lang } from "@/utils/i18n";
+
+export function getStaticPaths() {
+  return getLangPaths();
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const posts = (await getCollection("blog", (entry) =>
+  entry.id.startsWith(`${lang}/`),
+)).sort((a, b) => a.id.localeCompare(b.id));
+---
+
+<Layout title="Blog" lang={lang}>
+  <main>
+    {posts.map((post) => <h1>{post.data.title}</h1>)}
+  </main>
+</Layout>
